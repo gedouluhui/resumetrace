@@ -1,0 +1,42 @@
+{
+  "kind": "Recorded tiny CPU demo; process-cache is intentionally broken",
+  "source_sha256": {
+    "src/resumetrace/__init__.py": "ab13cddda689393d9c3f4740b0f289d82846f55a430131886527e8b74861186b",
+    "src/resumetrace/__main__.py": "bd045ddd5242d002f692dac452be9afba38deef5cde541a5fc074bfef5987b91",
+    "src/resumetrace/_worker.py": "26c35ae7a945926ab35f179af49d08049550b1bbed4789dacee8189cad4a905f",
+    "src/resumetrace/cli.py": "c115e9e701ed8dd62bd99c85c4599668394012247efb94a837d747f8b3f2e1c3",
+    "src/resumetrace/demo.py": "afb67e38d08f63bf4668047a1a04aaf2cfbd8391238bbda603c9e5377b59ecf6",
+    "src/resumetrace/engine.py": "f9c4457fa6e893880043895f802d29ce9704e2ef7c446e506aa2379a6b0d2923",
+    "src/resumetrace/fingerprint.py": "89d7b80c70f39fcc2cd08a0c144a1422cd3fb4c8253fe6228aa1afc6eac20778",
+    "src/resumetrace/report.py": "bdc8b00fa68e0c31e6ecb21342afb068296a902895c1c04e7965faa25cb30a24"
+  },
+  "runner_sha256": "ef93c0dc38d9e2f9b8b7127c2594369981e6473a27b72e1348623ac9fb412554",
+  "cases": {
+    "normal": {
+      "status": "PASS",
+      "environment": {
+        "python": "3.12.3",
+        "pytorch": "2.12.0",
+        "numpy": "2.4.6",
+        "os": "Windows"
+      },
+      "files": {
+        "example-normal.json": "0596bba3f10ee95efa87fcff35bf1600039bf7b9ad6e93bb2907476e3889413f",
+        "example-normal.html": "c9782bccccb0de5b9f8a87e912e7ec1f139c6e1d8f8e1bba0a7f423bb298c9dc"
+      }
+    },
+    "process-cache": {
+      "status": "DRIFT",
+      "environment": {
+        "python": "3.12.3",
+        "pytorch": "2.12.0",
+        "numpy": "2.4.6",
+        "os": "Windows"
+      },
+      "files": {
+        "example-process-cache.json": "73a2383cc101d8886966055a26bde515273f20e9a0c02b6f558bbd62d908eef4",
+        "example-process-cache.html": "92e232232b05dcf2b39ec880a9886d17011038e147722929366f34f3a82f70e0"
+      }
+    }
+  }
+}

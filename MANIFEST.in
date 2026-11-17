@@ -1,0 +1,6 @@
+include README.zh-CN.md
+recursive-include tests *.py
+recursive-include examples *.py
+recursive-include scripts *.py
+recursive-include docs *.md *.html *.json
+prune docs/superpowers

@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "configuration": {
+    "factory": "resumetrace.demo:make_session",
+    "max_checkpoint_bytes": 67108864,
+    "max_leaves": 20000,
+    "max_tensor_bytes": 67108864,
+    "max_trace_leaves": 200000,
+    "restart_seed": 991,
+    "seed": 7,
+    "split": 4,
+    "steps": 8,
+    "timeout": 120,
+    "factory_config_sha256": "7d761fc5761cf5c1807fea748d5381c3e32078485eaa47380f5f0ba860495a99"
+  },
+  "environment": {
+    "python": "3.12.3",
+    "pytorch": "2.12.0",
+    "numpy": "2.4.6",
+    "os": "Windows"
+  },
+  "control": {
+    "status": "PASS",
+    "steps_checked": 8
+  },
+  "workers": [
+    {
+      "role": "reference",
+      "token": "6ad133b1041f4f359eb6182418ee55df",
+      "pid": 46164,
+      "exit_code": 0
+    },
+    {
+      "role": "control",
+      "token": "c818f94d4d9f43919c9aa3821ed39e41",
+      "pid": 79428,
+      "exit_code": 0
+    },
+    {
+      "role": "prefix",
+      "token": "53ceb048c94c47bdacf7a6482db8d9eb",
+      "pid": 77580,
+      "exit_code": 0
+    },
+    {
+      "role": "resume",
+      "token": "fa040c79ee2a4dbf8732ec883f514c40",
+      "pid": 62840,
+      "exit_code": 0
+    }
+  ],
+  "first_divergence": null,
+  "comparisons": [
+    {
+      "phase": "restore",
+      "step": 4,
+      "matched": true,
+      "differing_path_count": 0,
+      "differences": [],
+      "reference_metrics": null,
+      "resumed_metrics": null
+    },
+    {
+      "phase": "step",
+      "step": 5,
+      "matched": true,
+      "differing_path_count": 0,
+      "differences": [],
+      "reference_metrics": {
+        "learning_rate": 0.012249999999999999,
+        "loss": 0.4062170386314392,
+        "step": 5
+      },
+      "resumed_metrics": {
+        "learning_rate": 0.012249999999999999,
+        "loss": 0.4062170386314392,
+        "step": 5
+      }
+    },
+    {
+      "phase": "step",
+      "step": 6,
+      "matched": true,
+      "differing_path_count": 0,
+      "differences": [],
+      "reference_metrics": {
+        "learning_rate": 0.008575,
+        "loss": 0.6612192392349243,
+        "step": 6
+      },
+      "resumed_metrics": {
+        "learning_rate": 0.008575,
+        "loss": 0.6612192392349243,
+        "step": 6
+      }
+    },
+    {
+      "phase": "step",
+      "step": 7,
+      "matched": true,
+      "differing_path_count": 0,
+      "differences": [],
+      "reference_metrics": {
+        "learning_rate": 0.008575,
+        "loss": 0.7370694875717163,
+        "step": 7
+      },
+      "resumed_metrics": {
+        "learning_rate": 0.008575,
+        "loss": 0.7370694875717163,
+        "step": 7
+      }
+    },
+    {
+      "phase": "step",
+      "step": 8,
+      "matched": true,
+      "differing_path_count": 0,
+      "differences": [],
+      "reference_metrics": {
+        "learning_rate": 0.006002499999999999,
+        "loss": 0.751672089099884,
+        "step": 8
+      },
+      "resumed_metrics": {
+        "learning_rate": 0.006002499999999999,
+        "loss": 0.751672089099884,
+        "step": 8
+      }
+    }
+  ],
+  "checkpoint": {
+    "file_count": 1,
+    "total_bytes": 25909,
+    "sha256": "9c7a42fb50e783a555c85941a5ab2e771df5966280f2086cb8a371f0d4ae4e01",
+    "files": [
+      {
+        "path_sha256": "03c2fd30bec547f159db24c456737c4ae5071aaa782456dc261ee67f936198dd",
+        "bytes": 25909,
+        "sha256": "3e9ecbd208bd6866647a8425ef7ccc828829784073cae544ec6bdd00081dffed"
+      }
+    ]
+  },
+  "coverage": {
+    "requested_steps": 8,
+    "split": 4,
+    "prefix_steps_checked": 4,
+    "resumed_steps_checked": 4,
+    "trace_leaves": 19652,
+    "scope": "deterministic CPU eager; whole optimizer steps; observed state only",
+    "limitations": [
+      "finite horizon is not a proof of future equivalence",
+      "observers must be pure; non-RNG side effects are not certified",
+      "no CUDA, distributed, AMP, compiled graphs or user subprocesses"
+    ]
+  },
+  "error": null
+}

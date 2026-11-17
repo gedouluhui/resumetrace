@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resumetrace"
+version = "0.1.0"
+description = "Cold-process differential tests for PyTorch checkpoint continuation"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "gedouluhui"}]
+dependencies = ["torch>=2.4,<3", "numpy>=1.24,<3"]
+keywords = ["pytorch", "checkpoint", "reproducibility", "testing", "machine-learning"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.scripts]
+resumetrace = "resumetrace.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["resumetrace*"]

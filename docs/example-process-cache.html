@@ -1,0 +1,1821 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>ResumeTrace · DRIFT report</title><style>
+:root{color-scheme:light;--paper:#eff3fa;--ink:#1a2437;--muted:#536178;--blue:#2459bf;--purple:#6755ad;--red:#b94035;--line:#d7dfed;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 'Segoe UI',system-ui,sans-serif}main{max-width:1120px;margin:auto;padding:48px 30px 64px}a{color:var(--blue)}header{display:flex;justify-content:space-between;gap:20px;align-items:start;border-bottom:1px solid var(--line);padding-bottom:28px}.brand{font:700 16px 'Cascadia Code',Consolas,monospace;letter-spacing:-.6px}.brand span{color:var(--blue)}.eyebrow{margin:0 0 12px;font:600 11px/1.5 'Cascadia Code',Consolas,monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(30px,4vw,44px);line-height:1.14;letter-spacing:-1.7px;font-weight:650;margin:12px 0 18px;max-width:690px}h2{font-size:21px;letter-spacing:-.5px;margin:0 0 16px}h3{font-size:14px;margin:0 0 6px}.lede{max-width:670px;color:var(--muted);margin:0}.stamp{font:700 13px 'Cascadia Code',Consolas,monospace;border:1px solid currentColor;padding:10px 17px;letter-spacing:1px;border-radius:4px;white-space:nowrap}.DRIFT{color:var(--red)}.PASS{color:var(--blue)}.INVALID{color:var(--purple)}section{margin-top:32px}.panel{background:var(--white);border:1px solid var(--line);border-radius:9px;padding:25px}.headline{display:flex;justify-content:space-between;gap:20px;align-items:start}.label{font-size:12px;color:var(--muted)}.boundary{font:500 42px/1.2 'Cascadia Code',Consolas,monospace;letter-spacing:-3px;margin:4px 0 8px}.boundary small{font-size:14px;letter-spacing:0;color:var(--muted)}code,pre{font-family:'Cascadia Code',Consolas,monospace}code{font-size:12px;overflow-wrap:anywhere}.path{display:block;padding:11px 14px;background:#f2f5fb;border-left:3px solid var(--red);margin-top:10px}.processes{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--white);border:1px solid var(--line);border-radius:9px;overflow:hidden}.process{padding:20px;border-right:1px solid var(--line)}.process:last-child{border:0;background:#eaf0ff}.process .number{font:600 11px Consolas,monospace;color:var(--blue);display:block;margin-bottom:18px}.process p{margin:0;font-size:12px;color:var(--muted)}.split{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}.note{font-size:13px;color:var(--muted)}.kv{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px}.kv strong{display:block;font-size:15px}.chart{width:100%;height:auto;max-height:270px;display:block}.legend{display:flex;gap:20px;font-size:12px;color:var(--muted);margin-top:8px}.legend span:before{content:'';display:inline-block;width:20px;border-top:2px solid var(--blue);margin:0 7px 3px 0}.legend span:last-child:before{border-color:var(--red)}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;vertical-align:top;padding:11px 14px;border-bottom:1px solid var(--line)}th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:650}td:first-child,th:first-child{padding-left:0}tr:last-child td{border:0}.mono{font-family:Consolas,monospace}summary{cursor:pointer;padding:10px 0;font-size:13px;font-weight:600}summary:focus-visible{outline:3px solid var(--blue);outline-offset:4px}details{border-top:1px solid var(--line);margin-top:14px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;background:#f2f5fb;padding:16px;border-radius:5px;max-height:460px;overflow:auto}.scope{border-left:3px solid var(--purple)}ul{padding-left:20px;margin:0}li{margin:7px 0}.footer{margin-top:40px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding-top:16px}.empty{padding:40px 10px;text-align:center;color:var(--muted);font-size:13px}@media(max-width:700px){.chart text{font-size:22px}main{padding:26px 16px 40px}.processes{grid-template-columns:1fr 1fr}.process{border-bottom:1px solid var(--line)}.process:nth-child(2){border-right:0}.split{grid-template-columns:1fr}.panel{padding:20px}header{gap:10px}.stamp{padding:8px 10px;font-size:11px}.headline{display:block}.footer{display:block}h1{letter-spacing:-1px}}@media print{body{background:white}main{max-width:none;padding:10px}.panel,.processes{break-inside:avoid}details pre{max-height:none}}
+</style></head>
+<body><main><header><div><div class="brand">resume<span>trace</span> /</div><p class="eyebrow" style="margin-top:28px">Cold-process checkpoint audit</p><h1>The run changed after restart.</h1><p class="lede">A valid control lets you distinguish a restart mismatch from baseline nondeterminism. Start at the first differing state, not just the loss curve.</p></div><div class="stamp DRIFT">DRIFT</div></header>
+<section aria-label="Process sequence"><div class="processes"><div class="process"><span class="number">01 / NEW INTERPRETER</span><h3>Continuous reference</h3><p>Run the original pipeline.</p><p class="mono">PID 29860</p></div><div class="process"><span class="number">02 / NEW INTERPRETER</span><h3>Independent control</h3><p>Repeat in a new interpreter.</p><p class="mono">PID 79092</p></div><div class="process"><span class="number">03 / NEW INTERPRETER</span><h3>Checkpoint + exit</h3><p>Save, then leave the process.</p><p class="mono">PID 76056</p></div><div class="process"><span class="number">04 / NEW INTERPRETER</span><h3>Cold-process resume</h3><p>Reconstruct and load from disk.</p><p class="mono">PID 47428</p></div></div></section>
+<section class="split"><div class="panel"><p class="eyebrow">The restart boundary</p><h2>What survived the restart?</h2><div class="boundary">4 <small>/ first differing step</small></div><div class="label">Phase: restore</div><code class="path">$/state/s:session/s:optimizer/s:param_groups/l:0/s:lr</code><code class="path">$/state/s:session/s:optimizer/s:state</code><code class="path">$/state/s:session/s:optimizer/s:state/i:0</code><code class="path">$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg</code><code class="path">$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg_sq</code></div><div class="panel"><p class="eyebrow">Validity before verdict</p><h2>Control: PASS</h2><div class="kv"><div class="label">Training horizon<strong>8 steps</strong></div><div class="label">Checkpoint boundary<strong>step 4</strong></div><div class="label">Initial seed<strong>7</strong></div><div class="label">Restart seed<strong>991</strong></div></div><p class="note">Exact, typed equality. No tolerance tuning. The resume worker starts only after the checkpoint process exits.</p></div></section>
+<section class="panel"><p class="eyebrow">Continuation evidence</p><h2>Loss is a signal, not the whole state.</h2><svg class="chart" viewBox="0 0 600 230" role="img" aria-label="Reference and resumed loss by step"><title>Loss after the checkpoint boundary</title><line x1="140" y1="175.0" x2="562" y2="175.0" stroke="#d7dfed"/><text x="130" y="179.0" text-anchor="end" fill="#536178" font-size="11">0.406</text><line x1="140" y1="112.5" x2="562" y2="112.5" stroke="#d7dfed"/><text x="130" y="116.5" text-anchor="end" fill="#536178" font-size="11">0.615</text><line x1="140" y1="50.0" x2="562" y2="50.0" stroke="#d7dfed"/><text x="130" y="54.0" text-anchor="end" fill="#536178" font-size="11">0.823</text><polyline points="140.00,175.00 280.00,98.54 420.00,75.80 560.00,71.42" fill="none" stroke="#2459bf" stroke-width="2" stroke-dasharray="5 4"/><circle cx="140.00" cy="175.00" r="3" fill="#2459bf"/><circle cx="280.00" cy="98.54" r="3" fill="#2459bf"/><circle cx="420.00" cy="75.80" r="3" fill="#2459bf"/><circle cx="560.00" cy="71.42" r="3" fill="#2459bf"/><polyline points="140.00,175.00 280.00,105.06 420.00,50.00 560.00,77.82" fill="none" stroke="#b94035" stroke-width="2" stroke-dasharray="none"/><circle cx="140.00" cy="175.00" r="3" fill="#b94035"/><circle cx="280.00" cy="105.06" r="3" fill="#b94035"/><circle cx="420.00" cy="50.00" r="3" fill="#b94035"/><circle cx="560.00" cy="77.82" r="3" fill="#b94035"/><text x="140.0" y="218" text-anchor="middle" fill="#536178" font-size="11">step 5</text><text x="560.0" y="218" text-anchor="middle" fill="#536178" font-size="11">step 8</text></svg><div class="legend"><span>Continuous reference</span><span>Cold-process resume</span></div><p class="note">Equal losses can hide lost scheduler or other state. A mismatch is an observation, not an automatic root-cause diagnosis.</p></section>
+<section class="split"><div class="panel"><h2>Step-by-step comparison</h2><div class="table-wrap"><table><thead><tr><th>Step</th><th>Phase</th><th>Result</th><th>Different paths</th></tr></thead><tbody><tr><td class="mono">4</td><td>restore</td><td class="DRIFT">Different</td><td>18</td></tr><tr><td class="mono">5</td><td>step</td><td class="DRIFT">Different</td><td>19</td></tr><tr><td class="mono">6</td><td>step</td><td class="DRIFT">Different</td><td>20</td></tr><tr><td class="mono">7</td><td>step</td><td class="DRIFT">Different</td><td>20</td></tr><tr><td class="mono">8</td><td>step</td><td class="DRIFT">Different</td><td>20</td></tr></tbody></table></div><details><summary>Step 4 · restore · 18 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;restore&quot;,
+  &quot;step&quot;: 4,
+  &quot;matched&quot;: false,
+  &quot;differing_path_count&quot;: 18,
+  &quot;differences&quot;: [
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:param_groups/l:0/s:lr&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;fac89febd80eb2c3acb2d2dbb0360fe42935d1a2bc4d6c7f411e1fabf030ab15&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;c28a79397b8f1fb9f3eda6937cf4b0ac1684b4eb8acac47541bf079038f48294&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state&quot;,
+      &quot;expected&quot;: {
+        &quot;length&quot;: 4,
+        &quot;type&quot;: &quot;dict&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;length&quot;: 0,
+        &quot;type&quot;: &quot;dict&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0&quot;,
+      &quot;expected&quot;: {
+        &quot;length&quot;: 3,
+        &quot;type&quot;: &quot;dict&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;053895251ecef253f8a78ea5f5d678422dd32a6ff026f01a1b2b5a10f5c70084&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4b52c5a2859de9d1b4725802f822e9cc826a439de7a0490e1c833857b822f3b1&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1&quot;,
+      &quot;expected&quot;: {
+        &quot;length&quot;: 3,
+        &quot;type&quot;: &quot;dict&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;a637ce8eed99159576057372795dd3130536ece6f91dcd78ce8299288077b24b&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;a26c088f60b1fa440b7d3b99bf17675d67032b4d257bf6363a3df36fe5c5e502&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2&quot;,
+      &quot;expected&quot;: {
+        &quot;length&quot;: 3,
+        &quot;type&quot;: &quot;dict&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;eff9d76ed9bae32898d37d1c0c8e3e725b1ed5dcc52ef88648676bbd22651112&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;600c9c44b07a7475b32250af3ec70c177b4ce283dc61fc394fe9f17510868c58&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3&quot;,
+      &quot;expected&quot;: {
+        &quot;length&quot;: 3,
+        &quot;type&quot;: &quot;dict&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;172ef484c36a66ca4140ad3608a6d6864c55da785c9cbf6b1a8ced8ffc5c746c&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;92880a989c7a3975370ff0bf0c42686f3edaecbc99dbdfad8cd915eacea75a6b&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: null
+    }
+  ],
+  &quot;reference_metrics&quot;: null,
+  &quot;resumed_metrics&quot;: null
+}</pre></details><details><summary>Step 5 · step · 19 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 5,
+  &quot;matched&quot;: false,
+  &quot;differing_path_count&quot;: 19,
+  &quot;differences&quot;: [
+    {
+      &quot;path&quot;: &quot;$/metrics/s:learning_rate&quot;,
+      &quot;expected&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;fac89febd80eb2c3acb2d2dbb0360fe42935d1a2bc4d6c7f411e1fabf030ab15&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;c28a79397b8f1fb9f3eda6937cf4b0ac1684b4eb8acac47541bf079038f48294&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;2a73211179fdbe55ef630cd7897b75c711360e83924f3eaf161380ab680026de&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;8070ab22b9c9e4e786a860d3601fb6e6ea885a95f762927066297232a54723cf&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;e9e5864c65b5b673fbcca930c2ce9d7add1faa28dd2c66438707951bc6ffabd8&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;5fa1658bad80c933ee464be918ac51dcee64992417724261cead49a3f755d92e&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;3d30d36f394f103bcc979e879bbf2142239b9f9ea3d28d088616ec9633ddd9f3&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;04696b33a74f884837c85fd1c2ee71be740373568fff4c76bac660f4a5d1cc81&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;652f6d66ab061e347c0f66efa8f6cb55a314a26f85166515fdfc9b0733ed5f59&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;bb89f70a28dea020bab69c83b3ae399ef678fa3e9057ecf6739ca3ece3ca4b9c&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:param_groups/l:0/s:lr&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;fac89febd80eb2c3acb2d2dbb0360fe42935d1a2bc4d6c7f411e1fabf030ab15&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;c28a79397b8f1fb9f3eda6937cf4b0ac1684b4eb8acac47541bf079038f48294&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;5a7fb74449bd9673bd3989c31019fc91ae4f052fa5fd78501e88284fef26b5b9&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;703e782e65c430831af2908e5e9424358e6687b9b68f1dfeaa177959359cced1&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d4ec6e1b5a1b74b6be96808ee21c291f8680973b7d28166ad3ff417db21b103a&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;8d70ae8ffaaef17f107e0da238a6ac71e31b6bf75c95cf84f9c5d96c2ba6267e&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;2d2ca0c0b3d8b8267114c03edc01c879071b7b3850043c5845d71046ed7fa85a&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;c7eb8efdf032e724879d868b498d39850a6f48eb3b5d1b15b2abd0a5408ee9ad&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;c6826de2b67140bbfa017a7a9b4d19a2ec4502a936ceb3971a27d84014cdcaaf&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;79c2043e5192d1f2847a6d2b6b630cc96471b6da479c5cd1f14f955148860664&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ee663f95052e5ab1dcdd2879687cdf89decb70f1995347d7d65e843f973bd60e&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ec0a69accf699cb849101033509c7a6372d5d28f2c275486b79b2f4f3655e958&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;0ec8525dbd1310d806990452ea2eed1f62231f8975a1ccad95443b00bbfca4cb&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;76e1aee27c514189d0a2057a784de10f1049db57aefb32e5f4c4faad03c237e5&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;838f94f4e519d0652302098bd4a558c6b8d648f12563aeb05fd0d92ccfc88ab5&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;84559fbc203893277692af9f8154c5e8d743d9467f339ffbdd00aa258e7ed70c&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;928c6f579019445b32d587bf656b440b4e17a0bd2cb0f297fb2a8147ed4a4131&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;f5a5f4c54e4de46029c38d5929c9e9f50b9f7a2ccfdf184cbdaf8ce307fa6553&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fca31f1667a6aa1bba12fca4e4ea1becd503379d80da3213af07f6cc5702828d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:scheduler/s:_last_lr/l:0&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;fac89febd80eb2c3acb2d2dbb0360fe42935d1a2bc4d6c7f411e1fabf030ab15&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;c28a79397b8f1fb9f3eda6937cf4b0ac1684b4eb8acac47541bf079038f48294&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    }
+  ],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.012249999999999999,
+    &quot;loss&quot;: 0.4062170386314392,
+    &quot;step&quot;: 5
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.025,
+    &quot;loss&quot;: 0.4062170386314392,
+    &quot;step&quot;: 5
+  }
+}</pre></details><details><summary>Step 6 · step · 20 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 6,
+  &quot;matched&quot;: false,
+  &quot;differing_path_count&quot;: 20,
+  &quot;differences&quot;: [
+    {
+      &quot;path&quot;: &quot;$/metrics/s:learning_rate&quot;,
+      &quot;expected&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;a0c347e5cb1d9d9e51249e84394e2b43e482382ee0815f7c4fe8bc697f595a41&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;876eaddb72b63675cbcdf8d72a1af38531017787d5c1634063fd0b007960da0d&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/metrics/s:loss&quot;,
+      &quot;expected&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;421c00189535c822620de89ba54de70bae5841c0275d5ba87f0fd3d232fbad68&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;bbef813252eb2bfe31ba22f6404ba8989bf20100ba780c33c4fdb45984a0d984&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ac2b0d902df4fa367624649855590c871273663db7450120a3991c1de8bb00d0&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d464238d1029cbe8a984807420d47c7347b0b3973a7f554ea216cfef770f796f&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;c744727e1e350e8b99d4664e6be096638d35645a16cc4c394fd8edcde3a7fdef&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;3e049bbe8906116b4b5bd70f8d808ba6e725044ea3eb9fd29a3a8c3a83b07bcf&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;5b6838d5d5f005e43af430c48fdcd95ca7b58f86cbc1472d980fa8d7c21f5900&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;0362c77b9ce9c7d0342cbf1439b1ec78fb5712945a57568c5fa7a458da663848&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;0f5c2bb2cb9a38d152433625bfbfba9bbed10704114f943b1fe7e2dc11e38e54&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;402b9ad08aee5f6dc5700fe69bddadaa2a73443688a90cb4671b4baff4fb5493&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:param_groups/l:0/s:lr&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;a0c347e5cb1d9d9e51249e84394e2b43e482382ee0815f7c4fe8bc697f595a41&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;876eaddb72b63675cbcdf8d72a1af38531017787d5c1634063fd0b007960da0d&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;9c5e1c81ba540e262d57f2f1393daf695bf01061e19b167642cc846fe57996aa&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;8e349104b7bc38b5baf82ef4c5f2ecf06f75e4163bd332864c24598429b81472&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;9d9d0a579591b52145d6e581d843a0a0773a6e900b8705dfdc4613ceb31a6849&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d24800751424526cf3e3e2d34d833747a4585f5e379c12a59681ed8270f4d852&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fedcca07b1ccdacce623cb6d8afdeed0314e8508d763e228871f18d4e0ebb7c4&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;0bea4de9fa03728fc67aaf48b9e13c847f2e3de296f8c938ff0c888b21228a58&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;149dfe40e6ce8eba36bbdd8cbc54b76a002d596f40c388c4fe75e6a76937b7c1&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d6ce3342bd0f85144db91f176cf2512cec504be5f58f17a7d9c6e293d5781b55&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;c7bee3fa5ee4204004b1befd07c94bf3b64646599b947dea1d63fc389f1e1725&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fedcca07b1ccdacce623cb6d8afdeed0314e8508d763e228871f18d4e0ebb7c4&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;5f1f5ff569a794817e4fed10dd45ce1e256cfd8ddf61457ac2460dd4378bf1a5&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;64ecbe8cbe1ad2af7834dfb3a8ea137fbb5f0431f032c1cda079471b3f07f5fc&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;bd501647c3d95416dd5f6a05d984218c545319097c81e947cd4f52fd89d7accb&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;586bb3a1b9731a9dc26e4b9139f297082d0d064c01c30608fa177318a5514f27&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fedcca07b1ccdacce623cb6d8afdeed0314e8508d763e228871f18d4e0ebb7c4&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;def86b5d4e1f1c859342391b4ea46eced0f0b3c01c54de05f9221410199c3294&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;93c77247cc389e22115b34ecced2664e222473f789d1b29803b3525293e29a5d&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;b44f7120812522ba9bf7dba9cf765b5b7f79402f8d276e863cb0b8234a27be5d&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;27839f396192ed90430b0e5bcead74fca0d33f03b927d64ded6eb6edab7769eb&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;fedcca07b1ccdacce623cb6d8afdeed0314e8508d763e228871f18d4e0ebb7c4&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d88c86f15bbea365d658ad95a81d45367c465f7af6f7264fb077f01747ddc77d&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:scheduler/s:_last_lr/l:0&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;a0c347e5cb1d9d9e51249e84394e2b43e482382ee0815f7c4fe8bc697f595a41&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;876eaddb72b63675cbcdf8d72a1af38531017787d5c1634063fd0b007960da0d&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    }
+  ],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.008575,
+    &quot;loss&quot;: 0.6612192392349243,
+    &quot;step&quot;: 6
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.017499999999999998,
+    &quot;loss&quot;: 0.6394716501235962,
+    &quot;step&quot;: 6
+  }
+}</pre></details><details><summary>Step 7 · step · 20 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 7,
+  &quot;matched&quot;: false,
+  &quot;differing_path_count&quot;: 20,
+  &quot;differences&quot;: [
+    {
+      &quot;path&quot;: &quot;$/metrics/s:learning_rate&quot;,
+      &quot;expected&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;a0c347e5cb1d9d9e51249e84394e2b43e482382ee0815f7c4fe8bc697f595a41&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;876eaddb72b63675cbcdf8d72a1af38531017787d5c1634063fd0b007960da0d&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/metrics/s:loss&quot;,
+      &quot;expected&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;05811c542e3c4b99e4cb7e2afa0cae4a7521d444a07478a5f12c2255450dca64&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;35be0b7c52c531a5f8432097d738780575358458f0eca6380df044dc12ad68e6&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;133d4f1ad0a135b5b06455a60f9f2fa94b45e43b0a6a23c3c814de23bf8690ed&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;a11f0954c5dafd7bdd9406abc6127150062130df15062b99162d208bdc3c6c47&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;1312a0479b64c21b7cbb8d25e7ccc16a7f6f36ee1ff26eb8a1a8f578f1f50fcc&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;0e20ae25a710f07a07a37b88189bbe5a40f7a0c4f5f1a58751247db5675cef68&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;662a23cf6e582882c0b7f856a1d51af163ec6aba7a2f368cbeb92d9f2eaf7405&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;43c80a292ae7aabb1d2a973ac554a8223ccab0487f0031df9844129be1cb92ed&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;f8222929f27ae0cf80bb568bc75bb2546389fabe22bf2c94bd541277011ea3ea&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;272c8048682a5c528259f84ecafd11f5d1d9d3b09268ae82f044ded6a38a3c7b&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:param_groups/l:0/s:lr&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;a0c347e5cb1d9d9e51249e84394e2b43e482382ee0815f7c4fe8bc697f595a41&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;876eaddb72b63675cbcdf8d72a1af38531017787d5c1634063fd0b007960da0d&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;61ba5337c3491a11077376e8768f9341875a7ee3946887bdd999a04f5822ea5d&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;a1699175a2f721394e6926f8a5295599e695e1f1dc03c76780a63e7b7ab5891b&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;2f1af16cdc25ab47de4c5ed54bfcd73fe617400e0cc15ec3fbaecd9c45fd97b7&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;96234f1020c4bc1335ae1d055988d181d8d2e4ff3629d26b3d39520bb9b00638&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ee0a6628f97214b7ef5d15c54388ea478862369e517aa4ef4593aea18c3ff618&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;98a65566d2da8b25345120e83f4910ab809ac9a2d18e0848a49c920bc68d3a5b&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;cdd5ec685c00e71d533f6d61b245046c4bad44f56f8cf9c84d4477eff85322ea&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;c9933f812ac6e1b7fc10a4f82edecdf660862315a52fce4c0dec5b10e027bb27&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;24086b4e6bf5c7eb6f8f0054c0002135526f143ee016eb2aa17797f43e1d0a3d&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ee0a6628f97214b7ef5d15c54388ea478862369e517aa4ef4593aea18c3ff618&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;75839fdf69ae2fb21c2e979cf56904e3125ae0e942f0c707d43135e2a9982e4c&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;6d274cd72b3f7204af5513adf6df67545aff576ae3683f5ae5623a76138c0b19&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;b91d321ddad94b196ad6111ad53790385f45179638690b555eeb5299ab633c15&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;6c702debfb71cb0bb8fbcb4dffdbd61f713836064baf49f09eddf169031d5805&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ee0a6628f97214b7ef5d15c54388ea478862369e517aa4ef4593aea18c3ff618&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;86ee967ad95c4acea36837234284b88f1bda9fccd5d7b6ec5c93990168dae531&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4b3f9ed5100e9821653ebb4f6bead1b7af619f6531c3f38fc29ce22293ecb451&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;e4cdf40affd1cb80d57d1002f7b467eb1471dca45b3d62355d5a5c5cc7f3f947&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;d198a7ac54351e7e87a67d77be5f47cd0a0fa18ef17aacf1e7347dfc2891c819&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ee0a6628f97214b7ef5d15c54388ea478862369e517aa4ef4593aea18c3ff618&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ea2845900b5856c9bf354b1aa9761b5aa6888e5ed61738fe9579ca42bc0f6054&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:scheduler/s:_last_lr/l:0&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;a0c347e5cb1d9d9e51249e84394e2b43e482382ee0815f7c4fe8bc697f595a41&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;876eaddb72b63675cbcdf8d72a1af38531017787d5c1634063fd0b007960da0d&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    }
+  ],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.008575,
+    &quot;loss&quot;: 0.7370694875717163,
+    &quot;step&quot;: 7
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.017499999999999998,
+    &quot;loss&quot;: 0.8231192827224731,
+    &quot;step&quot;: 7
+  }
+}</pre></details><details><summary>Step 8 · step · 20 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 8,
+  &quot;matched&quot;: false,
+  &quot;differing_path_count&quot;: 20,
+  &quot;differences&quot;: [
+    {
+      &quot;path&quot;: &quot;$/metrics/s:learning_rate&quot;,
+      &quot;expected&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;36e02edd208c0067a03280a03114440921d18fcad1eee095aad5d9c84cc6997b&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;fac89febd80eb2c3acb2d2dbb0360fe42935d1a2bc4d6c7f411e1fabf030ab15&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/metrics/s:loss&quot;,
+      &quot;expected&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;63953494f4c700863e1c9d6a45e9bea2e6cefe0f6752bbc037d9ba703d299c3d&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;sha256&quot;: &quot;15d45bdcf9eeeaae8d9425e0644869082a3cd3d26e9bcade783178f0bf022591&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;2e25ac300efed2c3eec09891135cd8650d887bbde75ebdf47c1b723b74d02e69&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;40e49bc53a707fab5de37a77e624074b2345e24af37b612ceeb0b498c025b810&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:0.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4c505a8177ffe03a7dd6edcc231a5f0114509713132c6f9b006b09b9d8593fb5&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;36675d370020863709734c862df20960d138ce5a466992c3cff62fd8a2c77636&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.bias&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;def0f583c49c03f1c8688a4bc15177d0728fbadbe8fcbff01b425e17d351fc88&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;179eb1a713cc60ec46f9e49e6a4e59e907ce8b965ce08f5f9ea0ade101f6cc0e&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:model/s:3.weight&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;eb930704662c93adc2495fdab6382d381b7df43f8b295977b1be71ec4ab88193&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;a3b158cd4883c415050d59c13d418a9958c1478f9adf4a4ba61051ccb8eb78ce&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:param_groups/l:0/s:lr&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;36e02edd208c0067a03280a03114440921d18fcad1eee095aad5d9c84cc6997b&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;fac89febd80eb2c3acb2d2dbb0360fe42935d1a2bc4d6c7f411e1fabf030ab15&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;43593924fa1db9fb5b3f81ddcf195172e9f9ba3d7f320b398b18a24e08f30ecf&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;dfa4ddc3af41c4ba5e000009d4a578fdd9f35fce4506bb0ef803a1d507413195&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;2c4522af38da50c06560ceb308a4f8e6ad7887456d55cc5d4cbff161b2ccacb5&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 192,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;48c8d0aa2130c219b111db1aa65b7984b68b4803462b5c7f0d5b0127b0fdbbfb&quot;,
+        &quot;shape&quot;: [
+          12,
+          4
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:0/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;03e3c2420f5066a5fa6e36735ed8cc4f6a251046263e1a6024f009deeee3b952&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ded0ff25815d92f7ad397c9a61757d80fc27efaae6738a4651753795eaa9c854&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;84191b3dc71041ca371f230a5ad4c2b03909d6035df4776b639e3cef0bdf290c&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;1518e77f7b2a4f3d26b3b7a71b1af828b9074bf5fd913caaa5ce601a6c480fbb&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 48,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;0c7be016846a8374daf7cc8d5633c7d1c31162f09e16a317bec21cd4d718463a&quot;,
+        &quot;shape&quot;: [
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:1/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;03e3c2420f5066a5fa6e36735ed8cc4f6a251046263e1a6024f009deeee3b952&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;c98ea7a0dda8341b0bb2e0bf63df935f9d2fd26dec42a56ca881054f06bd7328&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;7e451073088db2b7a7bd6682ae027742032189a8f33586220c7f8f4b899751e3&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;bcdcdaa3da4cdaa3110237d681d91db795ac44466710b85666f90d315456e474&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 96,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;59e4acdec67e96440e8b77180d5c7f2cb821b323df7dcb6656a153c86719ca05&quot;,
+        &quot;shape&quot;: [
+          2,
+          12
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:2/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;03e3c2420f5066a5fa6e36735ed8cc4f6a251046263e1a6024f009deeee3b952&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;ecfe81198d23388cda996a2ed63d7e88ff1c403edfa6cb52096c47503a03e423&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4126a3614951b17e163491f744154e54820de4205f42dbd6af804e9617ab049e&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:exp_avg_sq&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;6469100842e82b9a5e5c0bc2e82092c34d74ea5315757f7464ae6230d703f29f&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 8,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;5ec0a2548cda47e5e48ee932ac9b4e18eade7e23038e72395e33ad3ecb4f734f&quot;,
+        &quot;shape&quot;: [
+          2
+        ],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:optimizer/s:state/i:3/s:step&quot;,
+      &quot;expected&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;03e3c2420f5066a5fa6e36735ed8cc4f6a251046263e1a6024f009deeee3b952&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;bytes&quot;: 4,
+        &quot;dtype&quot;: &quot;torch.float32&quot;,
+        &quot;sha256&quot;: &quot;4f4b9b7d8b86633e2824e2f439819357b0cd010ab410ea1a691b12c5f94e91e0&quot;,
+        &quot;shape&quot;: [],
+        &quot;type&quot;: &quot;tensor&quot;
+      }
+    },
+    {
+      &quot;path&quot;: &quot;$/state/s:session/s:scheduler/s:_last_lr/l:0&quot;,
+      &quot;expected&quot;: {
+        &quot;sha256&quot;: &quot;36e02edd208c0067a03280a03114440921d18fcad1eee095aad5d9c84cc6997b&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;actual&quot;: {
+        &quot;sha256&quot;: &quot;fac89febd80eb2c3acb2d2dbb0360fe42935d1a2bc4d6c7f411e1fabf030ab15&quot;,
+        &quot;type&quot;: &quot;float&quot;
+      }
+    }
+  ],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.006002499999999999,
+    &quot;loss&quot;: 0.751672089099884,
+    &quot;step&quot;: 8
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.012249999999999999,
+    &quot;loss&quot;: 0.7303183078765869,
+    &quot;step&quot;: 8
+  }
+}</pre></details></div><div class="panel scope"><p class="eyebrow">Read with the result</p><h2>What this does not prove</h2><p class="note">deterministic CPU eager; whole optimizer steps; observed state only</p><ul><li>finite horizon is not a proof of future equivalence</li><li>observers must be pure; non-RNG side effects are not certified</li><li>no CUDA, distributed, AMP, compiled graphs or user subprocesses</li></ul><p class="note">Verified prefix: 4 steps.<br>Compared continuation: 4 steps.</p><p class="note">Trusted training code runs locally. This is not a sandbox, malicious-checkpoint scanner, or cross-platform reproducibility guarantee.</p></div></section>
+<section class="panel"><h2>Checkpoint identity</h2><p class="note">Relative filenames are hashed too, so private names do not enter the report.</p><div class="table-wrap"><table><thead><tr><th>Path SHA-256</th><th>Bytes</th><th>Content SHA-256</th></tr></thead><tbody><tr><td><code>03c2fd30bec547f159db24c456737c4ae5071aaa782456dc261ee67f936198dd</code></td><td>22071</td><td><code>000351f77501296d7f7a46429e76a7448fcf4633a71f569fe5297d43b569d627</code></td></tr></tbody></table></div><details><summary>Execution environment and worker evidence</summary><pre>{
+  &quot;environment&quot;: {
+    &quot;python&quot;: &quot;3.12.3&quot;,
+    &quot;pytorch&quot;: &quot;2.12.0&quot;,
+    &quot;numpy&quot;: &quot;2.4.6&quot;,
+    &quot;os&quot;: &quot;Windows&quot;
+  },
+  &quot;workers&quot;: [
+    {
+      &quot;role&quot;: &quot;reference&quot;,
+      &quot;token&quot;: &quot;0bac956e6199405a9ce3c75361fcb9a2&quot;,
+      &quot;pid&quot;: 29860,
+      &quot;exit_code&quot;: 0
+    },
+    {
+      &quot;role&quot;: &quot;control&quot;,
+      &quot;token&quot;: &quot;8659457f5cca487ca14bdb637a6b55c9&quot;,
+      &quot;pid&quot;: 79092,
+      &quot;exit_code&quot;: 0
+    },
+    {
+      &quot;role&quot;: &quot;prefix&quot;,
+      &quot;token&quot;: &quot;8d878346ae9543d49f3e734a79a5416e&quot;,
+      &quot;pid&quot;: 76056,
+      &quot;exit_code&quot;: 0
+    },
+    {
+      &quot;role&quot;: &quot;resume&quot;,
+      &quot;token&quot;: &quot;ce7ca6fe28b8442cb0963234b921ac49&quot;,
+      &quot;pid&quot;: 47428,
+      &quot;exit_code&quot;: 0
+    }
+  ]
+}</pre></details></section>
+<div class="footer"><span>ResumeTrace / experimental v0.1</span><span>Offline evidence · no scripts · no external requests · schema 1</span></div></main></body></html>

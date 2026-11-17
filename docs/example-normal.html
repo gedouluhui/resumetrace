@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>ResumeTrace · PASS report</title><style>
+:root{color-scheme:light;--paper:#eff3fa;--ink:#1a2437;--muted:#536178;--blue:#2459bf;--purple:#6755ad;--red:#b94035;--line:#d7dfed;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 'Segoe UI',system-ui,sans-serif}main{max-width:1120px;margin:auto;padding:48px 30px 64px}a{color:var(--blue)}header{display:flex;justify-content:space-between;gap:20px;align-items:start;border-bottom:1px solid var(--line);padding-bottom:28px}.brand{font:700 16px 'Cascadia Code',Consolas,monospace;letter-spacing:-.6px}.brand span{color:var(--blue)}.eyebrow{margin:0 0 12px;font:600 11px/1.5 'Cascadia Code',Consolas,monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(30px,4vw,44px);line-height:1.14;letter-spacing:-1.7px;font-weight:650;margin:12px 0 18px;max-width:690px}h2{font-size:21px;letter-spacing:-.5px;margin:0 0 16px}h3{font-size:14px;margin:0 0 6px}.lede{max-width:670px;color:var(--muted);margin:0}.stamp{font:700 13px 'Cascadia Code',Consolas,monospace;border:1px solid currentColor;padding:10px 17px;letter-spacing:1px;border-radius:4px;white-space:nowrap}.DRIFT{color:var(--red)}.PASS{color:var(--blue)}.INVALID{color:var(--purple)}section{margin-top:32px}.panel{background:var(--white);border:1px solid var(--line);border-radius:9px;padding:25px}.headline{display:flex;justify-content:space-between;gap:20px;align-items:start}.label{font-size:12px;color:var(--muted)}.boundary{font:500 42px/1.2 'Cascadia Code',Consolas,monospace;letter-spacing:-3px;margin:4px 0 8px}.boundary small{font-size:14px;letter-spacing:0;color:var(--muted)}code,pre{font-family:'Cascadia Code',Consolas,monospace}code{font-size:12px;overflow-wrap:anywhere}.path{display:block;padding:11px 14px;background:#f2f5fb;border-left:3px solid var(--red);margin-top:10px}.processes{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--white);border:1px solid var(--line);border-radius:9px;overflow:hidden}.process{padding:20px;border-right:1px solid var(--line)}.process:last-child{border:0;background:#eaf0ff}.process .number{font:600 11px Consolas,monospace;color:var(--blue);display:block;margin-bottom:18px}.process p{margin:0;font-size:12px;color:var(--muted)}.split{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}.note{font-size:13px;color:var(--muted)}.kv{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px}.kv strong{display:block;font-size:15px}.chart{width:100%;height:auto;max-height:270px;display:block}.legend{display:flex;gap:20px;font-size:12px;color:var(--muted);margin-top:8px}.legend span:before{content:'';display:inline-block;width:20px;border-top:2px solid var(--blue);margin:0 7px 3px 0}.legend span:last-child:before{border-color:var(--red)}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;vertical-align:top;padding:11px 14px;border-bottom:1px solid var(--line)}th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:650}td:first-child,th:first-child{padding-left:0}tr:last-child td{border:0}.mono{font-family:Consolas,monospace}summary{cursor:pointer;padding:10px 0;font-size:13px;font-weight:600}summary:focus-visible{outline:3px solid var(--blue);outline-offset:4px}details{border-top:1px solid var(--line);margin-top:14px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;background:#f2f5fb;padding:16px;border-radius:5px;max-height:460px;overflow:auto}.scope{border-left:3px solid var(--purple)}ul{padding-left:20px;margin:0}li{margin:7px 0}.footer{margin-top:40px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding-top:16px}.empty{padding:40px 10px;text-align:center;color:var(--muted);font-size:13px}@media(max-width:700px){.chart text{font-size:22px}main{padding:26px 16px 40px}.processes{grid-template-columns:1fr 1fr}.process{border-bottom:1px solid var(--line)}.process:nth-child(2){border-right:0}.split{grid-template-columns:1fr}.panel{padding:20px}header{gap:10px}.stamp{padding:8px 10px;font-size:11px}.headline{display:block}.footer{display:block}h1{letter-spacing:-1px}}@media print{body{background:white}main{max-width:none;padding:10px}.panel,.processes{break-inside:avoid}details pre{max-height:none}}
+</style></head>
+<body><main><header><div><div class="brand">resume<span>trace</span> /</div><p class="eyebrow" style="margin-top:28px">Cold-process checkpoint audit</p><h1>Observed continuation matched.</h1><p class="lede">The independent control, restored state and observed continuation matched exactly for this experiment. This is not a guarantee about unobserved state or future steps.</p></div><div class="stamp PASS">PASS</div></header>
+<section aria-label="Process sequence"><div class="processes"><div class="process"><span class="number">01 / NEW INTERPRETER</span><h3>Continuous reference</h3><p>Run the original pipeline.</p><p class="mono">PID 46164</p></div><div class="process"><span class="number">02 / NEW INTERPRETER</span><h3>Independent control</h3><p>Repeat in a new interpreter.</p><p class="mono">PID 79428</p></div><div class="process"><span class="number">03 / NEW INTERPRETER</span><h3>Checkpoint + exit</h3><p>Save, then leave the process.</p><p class="mono">PID 77580</p></div><div class="process"><span class="number">04 / NEW INTERPRETER</span><h3>Cold-process resume</h3><p>Reconstruct and load from disk.</p><p class="mono">PID 62840</p></div></div></section>
+<section class="split"><div class="panel"><p class="eyebrow">The restart boundary</p><h2>What survived the restart?</h2><div class="boundary">— <small>/ no established divergence</small></div></div><div class="panel"><p class="eyebrow">Validity before verdict</p><h2>Control: PASS</h2><div class="kv"><div class="label">Training horizon<strong>8 steps</strong></div><div class="label">Checkpoint boundary<strong>step 4</strong></div><div class="label">Initial seed<strong>7</strong></div><div class="label">Restart seed<strong>991</strong></div></div><p class="note">Exact, typed equality. No tolerance tuning. The resume worker starts only after the checkpoint process exits.</p></div></section>
+<section class="panel"><p class="eyebrow">Continuation evidence</p><h2>Loss is a signal, not the whole state.</h2><svg class="chart" viewBox="0 0 600 230" role="img" aria-label="Reference and resumed loss by step"><title>Loss after the checkpoint boundary</title><line x1="140" y1="175.0" x2="562" y2="175.0" stroke="#d7dfed"/><text x="130" y="179.0" text-anchor="end" fill="#536178" font-size="11">0.406</text><line x1="140" y1="112.5" x2="562" y2="112.5" stroke="#d7dfed"/><text x="130" y="116.5" text-anchor="end" fill="#536178" font-size="11">0.579</text><line x1="140" y1="50.0" x2="562" y2="50.0" stroke="#d7dfed"/><text x="130" y="54.0" text-anchor="end" fill="#536178" font-size="11">0.752</text><polyline points="140.00,175.00 280.00,82.73 420.00,55.28 560.00,50.00" fill="none" stroke="#2459bf" stroke-width="2" stroke-dasharray="5 4"/><circle cx="140.00" cy="175.00" r="3" fill="#2459bf"/><circle cx="280.00" cy="82.73" r="3" fill="#2459bf"/><circle cx="420.00" cy="55.28" r="3" fill="#2459bf"/><circle cx="560.00" cy="50.00" r="3" fill="#2459bf"/><polyline points="140.00,175.00 280.00,82.73 420.00,55.28 560.00,50.00" fill="none" stroke="#b94035" stroke-width="2" stroke-dasharray="none"/><circle cx="140.00" cy="175.00" r="3" fill="#b94035"/><circle cx="280.00" cy="82.73" r="3" fill="#b94035"/><circle cx="420.00" cy="55.28" r="3" fill="#b94035"/><circle cx="560.00" cy="50.00" r="3" fill="#b94035"/><text x="140.0" y="218" text-anchor="middle" fill="#536178" font-size="11">step 5</text><text x="560.0" y="218" text-anchor="middle" fill="#536178" font-size="11">step 8</text></svg><div class="legend"><span>Continuous reference</span><span>Cold-process resume</span></div><p class="note">Equal losses can hide lost scheduler or other state. A mismatch is an observation, not an automatic root-cause diagnosis.</p></section>
+<section class="split"><div class="panel"><h2>Step-by-step comparison</h2><div class="table-wrap"><table><thead><tr><th>Step</th><th>Phase</th><th>Result</th><th>Different paths</th></tr></thead><tbody><tr><td class="mono">4</td><td>restore</td><td class="PASS">Match</td><td>0</td></tr><tr><td class="mono">5</td><td>step</td><td class="PASS">Match</td><td>0</td></tr><tr><td class="mono">6</td><td>step</td><td class="PASS">Match</td><td>0</td></tr><tr><td class="mono">7</td><td>step</td><td class="PASS">Match</td><td>0</td></tr><tr><td class="mono">8</td><td>step</td><td class="PASS">Match</td><td>0</td></tr></tbody></table></div><details><summary>Step 4 · restore · 0 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;restore&quot;,
+  &quot;step&quot;: 4,
+  &quot;matched&quot;: true,
+  &quot;differing_path_count&quot;: 0,
+  &quot;differences&quot;: [],
+  &quot;reference_metrics&quot;: null,
+  &quot;resumed_metrics&quot;: null
+}</pre></details><details><summary>Step 5 · step · 0 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 5,
+  &quot;matched&quot;: true,
+  &quot;differing_path_count&quot;: 0,
+  &quot;differences&quot;: [],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.012249999999999999,
+    &quot;loss&quot;: 0.4062170386314392,
+    &quot;step&quot;: 5
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.012249999999999999,
+    &quot;loss&quot;: 0.4062170386314392,
+    &quot;step&quot;: 5
+  }
+}</pre></details><details><summary>Step 6 · step · 0 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 6,
+  &quot;matched&quot;: true,
+  &quot;differing_path_count&quot;: 0,
+  &quot;differences&quot;: [],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.008575,
+    &quot;loss&quot;: 0.6612192392349243,
+    &quot;step&quot;: 6
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.008575,
+    &quot;loss&quot;: 0.6612192392349243,
+    &quot;step&quot;: 6
+  }
+}</pre></details><details><summary>Step 7 · step · 0 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 7,
+  &quot;matched&quot;: true,
+  &quot;differing_path_count&quot;: 0,
+  &quot;differences&quot;: [],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.008575,
+    &quot;loss&quot;: 0.7370694875717163,
+    &quot;step&quot;: 7
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.008575,
+    &quot;loss&quot;: 0.7370694875717163,
+    &quot;step&quot;: 7
+  }
+}</pre></details><details><summary>Step 8 · step · 0 differing paths · metrics and evidence</summary><pre>{
+  &quot;phase&quot;: &quot;step&quot;,
+  &quot;step&quot;: 8,
+  &quot;matched&quot;: true,
+  &quot;differing_path_count&quot;: 0,
+  &quot;differences&quot;: [],
+  &quot;reference_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.006002499999999999,
+    &quot;loss&quot;: 0.751672089099884,
+    &quot;step&quot;: 8
+  },
+  &quot;resumed_metrics&quot;: {
+    &quot;learning_rate&quot;: 0.006002499999999999,
+    &quot;loss&quot;: 0.751672089099884,
+    &quot;step&quot;: 8
+  }
+}</pre></details></div><div class="panel scope"><p class="eyebrow">Read with the result</p><h2>What this does not prove</h2><p class="note">deterministic CPU eager; whole optimizer steps; observed state only</p><ul><li>finite horizon is not a proof of future equivalence</li><li>observers must be pure; non-RNG side effects are not certified</li><li>no CUDA, distributed, AMP, compiled graphs or user subprocesses</li></ul><p class="note">Verified prefix: 4 steps.<br>Compared continuation: 4 steps.</p><p class="note">Trusted training code runs locally. This is not a sandbox, malicious-checkpoint scanner, or cross-platform reproducibility guarantee.</p></div></section>
+<section class="panel"><h2>Checkpoint identity</h2><p class="note">Relative filenames are hashed too, so private names do not enter the report.</p><div class="table-wrap"><table><thead><tr><th>Path SHA-256</th><th>Bytes</th><th>Content SHA-256</th></tr></thead><tbody><tr><td><code>03c2fd30bec547f159db24c456737c4ae5071aaa782456dc261ee67f936198dd</code></td><td>25909</td><td><code>3e9ecbd208bd6866647a8425ef7ccc828829784073cae544ec6bdd00081dffed</code></td></tr></tbody></table></div><details><summary>Execution environment and worker evidence</summary><pre>{
+  &quot;environment&quot;: {
+    &quot;python&quot;: &quot;3.12.3&quot;,
+    &quot;pytorch&quot;: &quot;2.12.0&quot;,
+    &quot;numpy&quot;: &quot;2.4.6&quot;,
+    &quot;os&quot;: &quot;Windows&quot;
+  },
+  &quot;workers&quot;: [
+    {
+      &quot;role&quot;: &quot;reference&quot;,
+      &quot;token&quot;: &quot;6ad133b1041f4f359eb6182418ee55df&quot;,
+      &quot;pid&quot;: 46164,
+      &quot;exit_code&quot;: 0
+    },
+    {
+      &quot;role&quot;: &quot;control&quot;,
+      &quot;token&quot;: &quot;c818f94d4d9f43919c9aa3821ed39e41&quot;,
+      &quot;pid&quot;: 79428,
+      &quot;exit_code&quot;: 0
+    },
+    {
+      &quot;role&quot;: &quot;prefix&quot;,
+      &quot;token&quot;: &quot;53ceb048c94c47bdacf7a6482db8d9eb&quot;,
+      &quot;pid&quot;: 77580,
+      &quot;exit_code&quot;: 0
+    },
+    {
+      &quot;role&quot;: &quot;resume&quot;,
+      &quot;token&quot;: &quot;fa040c79ee2a4dbf8732ec883f514c40&quot;,
+      &quot;pid&quot;: 62840,
+      &quot;exit_code&quot;: 0
+    }
+  ]
+}</pre></details></section>
+<div class="footer"><span>ResumeTrace / experimental v0.1</span><span>Offline evidence · no scripts · no external requests · schema 1</span></div></main></body></html>
