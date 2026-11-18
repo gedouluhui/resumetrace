@@ -6,7 +6,7 @@
 
 ResumeTrace runs your training code in fresh Python interpreters and compares uninterrupted training with save → exit → reconstruct → resume. It re-enters your data pipeline instead of feeding both runs a cached list of batches.
 
-CPU-only, local, no model downloads or API keys. Experimental v0.1; exact equality of the state you expose, not a universal reproducibility guarantee.
+CPU-only, local, no model downloads or API keys. Version **0.2.0a1** is a pre-release with opt-in PyTorch inspection; the existing online demo and v0.1.0 release remain unchanged. Exact equality in a finite observed domain is not a universal reproducibility guarantee.
 
 [Open the recorded demo](https://gedouluhui.github.io/resumetrace/) · [中文快速开始](README.zh-CN.md) · [Integration example](examples/custom_training.py) · [Architecture](docs/ARCHITECTURE.md) · [Validation and review limits](docs/VALIDATION.md)
 
@@ -76,6 +76,45 @@ The module must be importable by a fresh interpreter launched with the same Pyth
 
 Expose model parameters and buffers, optimizer state and parameter-group order, scheduler, training mode, private generators, sampler cursor and other relevant Python state. The harness also compares the default CPU RNGs. It cannot infer state hidden inside your application or validate data that changes outside the test.
 
+## Optional: inspect the objects, not just checkpoint IDs
+
+An optimizer checkpoint can contain the **same integer IDs and state values** while attaching them to different model parameters after loading. Comparing `optimizer.state_dict()` alone does not establish the original parameter binding. `TorchSession` instead observes the live optimizer's parameter objects and maps them to registered model names.
+
+Opt in with one factory return line; your update and checkpoint code stay yours:
+
+```python
+from resumetrace import TorchSession
+
+def make_session(config):
+    session = YourExistingTrainingSession(config)
+    return TorchSession(session, gradient_policy="ignore")
+```
+
+`YourExistingTrainingSession` is your own class, not a provided package object. It needs ordinary `.model` and `.optimizer` instance attributes, plus `step`, `save`, `load`; an optional `observe()` supplies scheduler/data/private-generator state. The wrapper never clears gradients, restores missing state, changes learning rates or calls custom model serializers.
+
+Run the complete [guarded SGD example](examples/guarded_training.py) from this checkout:
+
+```bash
+python -m resumetrace audit examples.guarded_training:make_session --steps 3 --split 1 --json guarded.json --html guarded.html
+python -m resumetrace audit examples.guarded_training:make_session --config '{"fault":"observer"}' --steps 3 --split 1 --json observer.json --html observer.html
+python -m resumetrace audit examples.guarded_training:make_session --config '{"fault":"save"}' --steps 3 --split 1 --json save.json --html save.html
+```
+
+The first run should PASS. The second really zeroes weights from inside the observer; the third really changes weights **after writing a valid checkpoint**. Both should be INVALID with a named check, step and bounded differing paths. `save_state_changed` means the opt-in save-purity contract was violated, **not that the written checkpoint is necessarily unusable**. Existing unwrapped sessions are not subjected to this new purity contract.
+
+| Automatically observed by the wrapper | Still your responsibility |
+|---|---|
+| Registered parameters and buffers, including nonpersistent buffers | Expose scheduler, sampler/data cursor, private RNG and application counters |
+| Actual optimizer parameter-name binding, state and group settings | Use an importable factory and trusted callbacks |
+| Per-module train/eval and parameter `requires_grad` | Avoid concurrent mutation and external side effects |
+| Before/after callback changes to native state and default RNGs | Review coverage; hidden/unregistered state is not inferred |
+
+Gradient policies are deliberate: **ignore** (default) excludes gradients from restart comparison, accommodating loops that zero at the beginning of the next step; **capture** compares their exact state; **require_none** requires them to be cleared already. Callback guards inspect gradients in every policy. Nothing is silently cleared for you.
+
+This adapter supports CPU eager models and **native SGD/AdamW**. Unsupported state, aliased/overlapping storage (including optimizer and gradient tensors), internally overlapping or uncertifiable strided layouts, tensor subclasses, custom optimizer classes, and exceeded capture budgets return INVALID. Shared/tied model registrations are not supported yet. A noncontiguous tensor with a separable, nonoverlapping stride layout can be inspected; this is not an arbitrary alias-analysis engine.
+
+Each guard fingerprints full observed state multiple times, bounded by the configured byte/leaf budgets; save checks include user-declared data too. This adds time and temporary allocations. Budgets are not process-RSS caps, and the checks do not certify filesystem/network effects or hidden globals. Reports show the inspection mode and gradient policy; different declarations across workers invalidate the experiment. No checks or state are added to generic sessions behind their backs.
+
 ## Four runs, one validity gate
 
 ```text
@@ -101,7 +140,7 @@ A changing continuous control is not blamed on the checkpoint. Nonfinite tensors
 
 Tensor evidence contains shape, dtype, logical byte count and SHA-256; equality is not inferred from norms. Keys are typed and escaped, empty containers count, and integer `1` is different from string `'1'`. Numeric metrics are shown; raw weights and tensor elements are not.
 
-Logical tensor values are compared, not strides, alias relationships or allocator state. There is no tolerance tuning in v0.1. Checkpoint hashes identify the observed bytes; they do not authenticate their origin. Relative checkpoint names and factory configuration are hashed rather than echoed. Hashing is not anonymization: predictable inputs may still be guessed, so review reports before sharing.
+Generic tensor fingerprints compare logical values, not strides, alias relationships or allocator state. The optional TorchSession adds a conservative storage-overlap rejection step; it does not redefine the generic value contract. There is no tolerance tuning. Checkpoint hashes identify the observed bytes; they do not authenticate their origin. Relative checkpoint names and factory configuration are hashed rather than echoed. Hashing is not anonymization: predictable inputs may still be guessed, so review reports before sharing.
 
 The JSON report is machine-readable (`schema_version: 1`). Difference details are bounded and include a full difference count. Each output file is published atomically, but writing JSON and HTML to separate destinations is not a cross-file transaction. Observation names and user-provided numeric metrics are your own disclosure boundary: do not use them for secrets.
 

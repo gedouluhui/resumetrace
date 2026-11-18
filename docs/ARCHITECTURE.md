@@ -38,6 +38,16 @@ All three global RNG states are captured before `observe()`. If the callback cha
 
 Relevant model buffers, optimizer group order/state, scheduler, training flags, private generators, sampler cursor and other Python fields must be exposed by the user's observation. Unexposed state is not implicitly checked. Non-RNG observer side effects and save side effects are not automatically certified by this generic callback interface.
 
+### Optional native PyTorch inspection
+
+`TorchSession` is an opt-in wrapper, not a change to the generic protocol. It reads native model registrations (including nonpersistent buffers), module modes, requires_grad and native SGD/AdamW state tied to actual parameter names. It does not invoke model state_dict hooks or use saved optimizer IDs as identity. It rejects model/optimizer/gradient storage aliases and internally overlapping or uncertifiable strided layouts instead of pretending logical values describe alias behavior.
+
+Before a user observer, native state including gradients and all default RNGs is fingerprinted; after the observer it is fingerprinted again. This catches saturating mutations (e.g. clearing all weights) that two post-observation snapshots would miss. Saving is additionally checked with complete before/after observations, user-declared state and RNG. A save-purity violation invalidates this opt-in experiment even when a correctly written checkpoint could independently resume. Neither mode certifies arbitrary external or unregistered side effects.
+
+Gradient policy is explicit (`ignore`, `capture`, `require_none`). Default ignore keeps existing whole-step loops valid without clearing their gradients. Guards always inspect gradients. Ignored gradients are not certified across resume; capture requires checkpoint callbacks to restore them if their presence matters.
+
+Wrapped worker envelopes include an optional strictly validated `inspection` declaration. A different declaration across roles is INVALID. Safe structured failure details contain only check, step, capped typed paths and total count. The original schema-1 generic envelope and report statuses remain valid. Report coverage adds inspection metadata only for wrapped sessions. The same audit byte/leaf cap is applied to wrapper captures, but repeated hashing has additional time/memory cost and is not a process-RSS cap.
+
 ## Exact typed fingerprints
 
 CPU dense strided tensors are validated, then hashed over their logical contiguous bytes. Shape, dtype and byte count are part of the evidence. Equal norms are not equal tensors. Positive and negative zero are distinguished. Strides, alias relationships and allocator identity are outside this value contract.

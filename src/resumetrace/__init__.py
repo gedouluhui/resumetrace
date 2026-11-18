@@ -3,9 +3,10 @@ from pathlib import Path
 from typing import Mapping, Protocol
 
 from .engine import audit_resume
+from .torch_observer import TorchSession
 
-__version__ = '0.1.0'
-__all__ = ['TrainingSession', 'audit_resume']
+__version__ = '0.2.0a1'
+__all__ = ['TrainingSession', 'audit_resume', 'TorchSession']
 
 
 class TrainingSession(Protocol):

@@ -131,6 +131,33 @@ class ReportTests(unittest.TestCase):
         self.assertIn('validation_accuracy', output)
         self.assertIn('0.875', output)
 
+    def test_inspection_coverage_and_purity_evidence_are_visible_and_escaped(self):
+        report = sample_report()
+        report['coverage']['inspection'] = {'mode': 'torch', 'gradient_policy': 'ignore',
+                                            'declared_state': True}
+        report.update(status='INVALID', first_divergence=None, comparisons=[], checkpoint=None)
+        path = '$/s:model/s:</script><img src=x onerror=alert(1)>'
+        report['error'] = {'stage': 'save', 'type': 'ValueError', 'reason': 'save_state_changed',
+                           'detail': {'check': 'save', 'step': 4, 'paths': [path], 'differing_path_count': 1}}
+        output = render_html(report)
+        self.assertIn('Automatic PyTorch inspection', output)
+        self.assertIn('Not compared across restart', output)
+        self.assertIn('Callback changed observed state', output)
+        self.assertIn('not proof that the saved checkpoint is unusable', output)
+        self.assertIn('&lt;/script&gt;', output)
+        self.assertNotIn('<img', output)
+        self.assertNotIn('Automatic PyTorch inspection', render_html(sample_report()))
+
+    def test_all_gradient_policies_have_explicit_human_meaning(self):
+        for policy, label in [('ignore', 'Not compared across restart'),
+                              ('capture', 'Compared exactly across restart'),
+                              ('require_none', 'Required to be None at every observation')]:
+            report = sample_report()
+            report['coverage']['inspection'] = {'mode': 'torch', 'gradient_policy': policy,
+                                                'declared_state': False}
+            self.assertIn(label, render_html(report))
+            self.assertIn('No application-specific state was declared', render_html(report))
+
     def test_unknown_schema_or_status_is_not_presented_as_valid(self):
         for key, value in (('schema_version', 7), ('status', 'unknown')):
             report = sample_report()

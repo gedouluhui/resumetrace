@@ -15,21 +15,24 @@ import tempfile
 import uuid
 
 from .fingerprint import DTYPE_SIZES, MAX_PATH, compare_fingerprints, escape, fingerprint
+from .torch_observer import REASONS as INSPECTION_REASONS, POLICIES
 
 
 JOB_BYTES = 1048576
 RESULT_BYTES = 67108864
 ROLES = ('reference', 'control', 'prefix', 'resume')
 REASONS = {'callback_error', 'invalid_state', 'invalid_metrics', 'observer_rng_consumed',
-           'trace_leaf_limit', 'result_byte_limit', 'worker_setup_error'}
+           'trace_leaf_limit', 'result_byte_limit', 'worker_setup_error'} | INSPECTION_REASONS
 STAGES = {'setup', 'factory', 'step', 'observe', 'fingerprint', 'save', 'load', 'result'}
 TYPES = {'TypeError', 'ValueError', 'RuntimeError', 'OSError', 'MemoryError',
          'ImportError', 'AttributeError', 'TimeoutError', 'SystemExit', 'Exception'}
 
 
 class _Failure(Exception):
-    def __init__(self, stage, reason, kind='ValueError'):
+    def __init__(self, stage, reason, kind='ValueError', detail=None):
         self.error = {'stage': stage, 'type': kind, 'reason': reason}
+        if detail is not None:
+            self.error['detail'] = detail
 
 
 def _safe_type(error):
@@ -199,18 +202,56 @@ def _validate_state(state, config):
         raise ValueError('invalid_observation_evidence')
 
 
+def _validate_inspection(value):
+    if (type(value) is not dict or set(value) != {'mode', 'gradient_policy', 'declared_state'} or
+            value['mode'] != 'torch' or type(value['gradient_policy']) is not str or
+            value['gradient_policy'] not in POLICIES or type(value['declared_state']) is not bool):
+        raise ValueError('invalid_inspection')
+
+
+def _validate_inspection_detail(error, job):
+    detail = error.get('detail')
+    check = 'observe' if error['reason'] == 'observer_state_changed' else 'save'
+    if (type(detail) is not dict or set(detail) != {'check', 'step', 'paths', 'differing_path_count'} or
+            detail['check'] != check or error['stage'] != check or
+            type(detail['step']) is not int or not job['start'] <= detail['step'] <= job['end'] or
+            (check == 'save' and (job['role'] != 'prefix' or detail['step'] != job['end']))):
+        raise ValueError('invalid_inspection_detail')
+    paths, count = detail['paths'], detail['differing_path_count']
+    if (type(paths) is not list or not 1 <= len(paths) <= 50 or type(count) is not int or
+            count < len(paths) or count > 2000000 or
+            any(type(path) is not str or not path.startswith('$/') or len(path) > MAX_PATH
+                for path in paths) or len(set(paths)) != len(paths)):
+        raise ValueError('invalid_inspection_detail')
+    return detail
+
+
 def _validate_result(result, job, pid):
-    if type(result) is not dict or set(result) != {'schema_version', 'token', 'role', 'pid', 'observations', 'error'}:
+    required = {'schema_version', 'token', 'role', 'pid', 'observations', 'error'}
+    if type(result) is not dict or set(result) not in (required, required | {'inspection'}):
         raise ValueError('invalid_envelope')
+    if 'inspection' in result:
+        _validate_inspection(result['inspection'])
     if type(result['schema_version']) is not int or result['schema_version'] != 1 or result['token'] != job['token'] or result['role'] != job['role']:
         raise ValueError('invalid_identity')
     if type(result['pid']) is not int or result['pid'] != pid:
         raise ValueError('invalid_identity')
     error, observations = result['error'], result['observations']
     if error is not None:
-        if type(error) is not dict or set(error) != {'stage', 'type', 'reason'} or error['stage'] not in STAGES or error['type'] not in TYPES or error['reason'] not in REASONS or observations != []:
+        basic = {'stage', 'type', 'reason'}
+        if (type(error) is not dict or set(error) not in (basic, basic | {'detail'}) or
+                any(type(error[key]) is not str for key in basic) or error['stage'] not in STAGES or
+                error['type'] not in TYPES or error['reason'] not in REASONS or observations != []):
             raise ValueError('invalid_error')
-        raise _Failure(error['stage'], error['reason'], error['type'])
+        if error['reason'] in INSPECTION_REASONS and 'inspection' not in result:
+            raise ValueError('invalid_inspection_error')
+        if error['reason'] in ('observer_state_changed', 'save_state_changed'):
+            detail = _validate_inspection_detail(error, job)
+        elif 'detail' in error:
+            raise ValueError('invalid_error_detail')
+        else:
+            detail = None
+        raise _Failure(error['stage'], error['reason'], error['type'], detail)
     indices = range(job['start'], job['end'] + 1)
     if type(observations) is not list or len(observations) != len(indices):
         raise ValueError('invalid_horizon')
@@ -337,6 +378,16 @@ def audit_resume(factory: str, *, factory_config=None, steps=8, split=4, seed=7,
                                            'no CUDA, distributed, AMP, compiled graphs or user subprocesses']},
               'error': None}
     root = None
+    inspection_history = []
+
+    def record_inspection(value, role):
+        declaration = value.get('inspection')
+        if inspection_history and declaration != inspection_history[0]:
+            raise _Failure(role, 'inspection_mode_changed')
+        inspection_history.append(declaration)
+        if declaration is not None:
+            report['coverage']['inspection'] = declaration
+
     def run(role, start, end):
         token = uuid.uuid4().hex
         result_path, job_path = root / (role + '.result.json'), root / (role + '.job.json')
@@ -370,11 +421,18 @@ def audit_resume(factory: str, *, factory_config=None, steps=8, split=4, seed=7,
         if child.returncode != 0:
             raise _Failure(role, 'worker_exit', 'RuntimeError')
         try:
-            observations, count = _validate_result(_read_json(result_path, RESULT_BYTES), job, child.pid)
+            value = _read_json(result_path, RESULT_BYTES)
+            observations, count = _validate_result(value, job, child.pid)
         except _Failure:
+            # A worker can fail before its factory constructs an inspection wrapper.
+            # Such a structured error has no declaration to compare; keep its
+            # original reason instead of blaming a mode change.
+            if 'inspection' in value:
+                record_inspection(value, role)
             raise
         except Exception:
             raise _Failure(role, 'invalid_worker_result') from None
+        record_inspection(value, role)
         report['coverage']['trace_leaves'] += count
         return observations
     try:

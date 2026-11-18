@@ -12,6 +12,7 @@ import torch
 from .engine import (JOB_BYTES, RESULT_BYTES, ROLES, _Failure, _encode, _metrics,
                      _read_json, _safe_type, _validate_config)
 from .fingerprint import fingerprint
+from .torch_observer import TorchSession, InspectionError
 
 
 def _job(path):
@@ -59,7 +60,7 @@ def _run(job):
     config, role = job['configuration'], job['role']
     result = {'schema_version': 1, 'token': job['token'], 'role': role,
               'pid': os.getpid(), 'observations': [], 'error': None}
-    stage = 'setup'
+    stage, index = 'setup', job['start']
     try:
         seed = config['restart_seed'] if role == 'resume' else config['seed']
         random.seed(seed)
@@ -71,6 +72,11 @@ def _run(job):
         module, function = config['factory'].split(':')
         factory = getattr(importlib.import_module(module), function)
         session = factory(config['factory_config'])
+        if type(session) is TorchSession:
+            result['inspection'] = session.declaration()
+            session.limit(max_tensor_bytes=config['max_tensor_bytes'], max_leaves=config['max_leaves'])
+        elif isinstance(session, TorchSession):
+            raise TypeError('custom_inspection_wrapper')
         if any(not callable(getattr(session, name, None)) for name in ('step', 'observe', 'save', 'load')):
             raise TypeError('session_protocol')
         if role == 'resume':
@@ -121,6 +127,14 @@ def _run(job):
         if role == 'prefix':
             stage = 'save'
             session.save(Path(job['checkpoint_dir']))
+    except InspectionError as failure:
+        result['observations'] = []
+        result['error'] = {'stage': stage, 'type': 'ValueError', 'reason': failure.reason}
+        if failure.reason in ('observer_state_changed', 'save_state_changed'):
+            check = 'observe' if failure.reason == 'observer_state_changed' else 'save'
+            result['error']['stage'] = check
+            result['error']['detail'] = {'check': check, 'step': index,
+                                        'paths': list(failure.paths), 'differing_path_count': failure.count}
     except _Failure as failure:
         result['observations'] = []
         result['error'] = failure.error

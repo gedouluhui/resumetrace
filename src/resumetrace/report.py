@@ -77,6 +77,47 @@ def _loss_chart(comparisons: list) -> str:
     return ''.join(parts)
 
 
+def _inspection_html(report):
+    coverage = report.get('coverage', {})
+    inspection = coverage.get('inspection') if type(coverage) is dict else None
+    if inspection is None:
+        return ''
+    labels = {'ignore': 'Not compared across restart',
+              'capture': 'Compared exactly across restart',
+              'require_none': 'Required to be None at every observation'}
+    if (type(inspection) is not dict or inspection.get('mode') != 'torch' or
+            type(inspection.get('gradient_policy')) is not str or
+            inspection['gradient_policy'] not in labels or
+            type(inspection.get('declared_state')) is not bool):
+        raise ValueError('invalid inspection coverage')
+    declared = ('Application-specific state supplied by the training session' if inspection['declared_state']
+                else 'No application-specific state was declared')
+    parts = ['<section class="panel scope"><p class="eyebrow">Explicit observation coverage</p>',
+             '<h2>Automatic PyTorch inspection</h2>',
+             '<p>Native model parameters, all registered buffers, module modes, requires_grad and '
+             'optimizer state bound to actual parameter names.</p>',
+             '<div class="kv"><div class="label">Gradient comparison<strong>' +
+             _e(labels[inspection['gradient_policy']]) + '</strong></div>',
+             '<div class="label">Scheduler, data cursor and private state<strong>' + _e(declared) +
+             '</strong></div></div>',
+             '<p class="note">Gradients are checked for callback mutation even when excluded from '
+             'restart comparison. These checks do not cover filesystem effects or unregistered state.</p>']
+    error = report.get('error')
+    detail = error.get('detail') if type(error) is dict else None
+    if detail:
+        parts.append('<h3>Callback changed observed state</h3><p>Check: <strong>' +
+                     _e(detail.get('check')) + '</strong> at step <strong>' +
+                     _e(detail.get('step')) + '</strong>; ' + _e(detail.get('differing_path_count')) +
+                     ' differing paths.</p>')
+        for path in detail.get('paths', [])[:5]:
+            parts.append('<code class="path">' + _e(path) + '</code>')
+        if detail.get('check') == 'save':
+            parts.append('<p class="note">This violates the opt-in save-purity contract; it is '
+                         'not proof that the saved checkpoint is unusable.</p>')
+    parts.append('</section>')
+    return ''.join(parts)
+
+
 def render_html(report: dict) -> str:
     """Render a schema-v1 result as a standalone, script-free evidence page."""
     _validate(report)
@@ -132,11 +173,12 @@ def render_html(report: dict) -> str:
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>ResumeTrace · {_e(status)} report</title><style>{_STYLE}</style></head>
 <body><main><header><div><div class="brand">resume<span>trace</span> /</div><p class="eyebrow" style="margin-top:28px">Cold-process checkpoint audit</p><h1>{title}</h1><p class="lede">{introduction}</p></div><div class="stamp {status}">{status}</div></header>
 <section aria-label="Process sequence"><div class="processes">{''.join(processes)}</div></section>
+{_inspection_html(report)}
 <section class="split"><div class="panel"><p class="eyebrow">The restart boundary</p><h2>What survived the restart?</h2>{first}</div><div class="panel"><p class="eyebrow">Validity before verdict</p><h2>Control: {_e(control.get('status', 'unknown'))}</h2><div class="kv"><div class="label">Training horizon<strong>{_e(config.get('steps'))} steps</strong></div><div class="label">Checkpoint boundary<strong>step {_e(config.get('split'))}</strong></div><div class="label">Initial seed<strong>{_e(config.get('seed'))}</strong></div><div class="label">Restart seed<strong>{_e(config.get('restart_seed'))}</strong></div></div><p class="note">Exact, typed equality. No tolerance tuning. The resume worker starts only after the checkpoint process exits.</p></div></section>
 <section class="panel"><p class="eyebrow">Continuation evidence</p><h2>Loss is a signal, not the whole state.</h2>{_loss_chart(report['comparisons'])}<p class="note">Equal losses can hide lost scheduler or other state. A mismatch is an observation, not an automatic root-cause diagnosis.</p></section>
 <section class="split"><div class="panel"><h2>Step-by-step comparison</h2><div class="table-wrap"><table><thead><tr><th>Step</th><th>Phase</th><th>Result</th><th>Different paths</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>{details}</div><div class="panel scope"><p class="eyebrow">Read with the result</p><h2>What this does not prove</h2>{scope}<p class="note">Trusted training code runs locally. This is not a sandbox, malicious-checkpoint scanner, or cross-platform reproducibility guarantee.</p></div></section>
 <section class="panel"><h2>Checkpoint identity</h2><p class="note">Relative filenames are hashed too, so private names do not enter the report.</p><div class="table-wrap"><table><thead><tr><th>Path SHA-256</th><th>Bytes</th><th>Content SHA-256</th></tr></thead><tbody>{checkpoint_rows or '<tr><td colspan="3">No validated checkpoint files.</td></tr>'}</tbody></table></div><details><summary>Execution environment and worker evidence</summary><pre>{_pretty({'environment': report['environment'], 'workers': report['workers']})}</pre></details></section>
-<div class="footer"><span>ResumeTrace / experimental v0.1</span><span>Offline evidence · no scripts · no external requests · schema 1</span></div></main></body></html>'''
+<div class="footer"><span>ResumeTrace / experimental</span><span>Offline evidence · no scripts · no external requests · schema 1</span></div></main></body></html>'''
 
 
 def write_reports(report: dict, *, json_path=None, html_path=None, force: bool = False) -> None:
