@@ -1,4 +1,38 @@
-# Validation record — experimental v0.2.0a1
+# Validation record — experimental v0.2.1
+
+Recorded 2026-11-19 for the 0.2.1 pre-release. These are actual local execution results,
+not a correctness proof, external user study, model-quality evaluation or performance
+claim.
+
+## 0.2.1 — RNG format validation
+
+The independent read-only review of 0.2.0a1 reported that a structurally self-consistent
+but invalid RNG observation was accepted. The exact counterexample: a Torch state
+recorded as dtype float32 with shape `[0]`. Both runs then carried the same invalid value,
+so the comparison matched and the audit could pass.
+
+Fix: `src/resumetrace/rng_format.py` derives the expected format from the running
+interpreter and the parent checks every observation before comparison:
+
+- Python state: version integer, internal tuple of the declared length with integer
+  leaves, Gaussian cache `None` or float;
+- NumPy state: key string, MT19937 tensor with the declared dtype and shape (uint32,
+  624), position integers and a float Gaussian cache;
+- Torch state: declared dtype (uint8) and shape (5056 on this build).
+
+Rejection is `invalid_worker_result`, the same reason used for other malformed worker
+evidence; no new public state or CLI flag was added.
+
+- `python -m unittest discover -s tests -v`: **101 tests, 100 passed and one skipped** in
+  1060.076 s. The skip is actual symlink creation denied by Windows; no permissions were
+  changed to force it. Do not call this 101 passing tests.
+- `tests/test_global_rng.py::test_parent_rejects_structurally_invalid_rng_from_real_worker`
+  captures a real worker result and mutates five cases: the float32 empty Torch state,
+  a wrong Torch shape, a wrong NumPy dtype, a truncated Python state tuple and a
+  non-numeric Gaussian cache. All five raise before comparison. The test is built from
+  captured evidence, not from hand-written fixtures.
+- No change to the demo, report schema, CLI or result states.
+
 
 Recorded 2026-11-19 for the 0.2.0a1 pre-release, with the earlier v0.1 checks retained below where still relevant. These are actual local execution results, not a correctness proof, external user study, model-quality evaluation or performance claim.
 

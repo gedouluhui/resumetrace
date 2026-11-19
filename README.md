@@ -6,7 +6,7 @@
 
 ResumeTrace runs your training code in fresh Python interpreters and compares uninterrupted training with save → exit → reconstruct → resume. It re-enters your data pipeline instead of feeding both runs a cached list of batches.
 
-CPU-only, local, no model downloads or API keys. Version **0.2.0a1** is a pre-release with opt-in PyTorch inspection; the existing online demo and v0.1.0 release remain unchanged. Exact equality in a finite observed domain is not a universal reproducibility guarantee.
+CPU-only, local, no model downloads or API keys. Version **0.2.1** fixes a real contract hole found in review: malformed RNG evidence (for example a float32 empty Torch state) is now rejected instead of compared, and each RNG's internal structure, dtype and shape must match what the running interpreter produces. The release is still a pre-release: there is no independent whole-project approval. Exact equality in a finite observed domain is not a universal reproducibility guarantee.
 
 [Open the recorded demo](https://gedouluhui.github.io/resumetrace/) · [中文快速开始](README.zh-CN.md) · [Integration example](examples/custom_training.py) · [Architecture](docs/ARCHITECTURE.md) · [Validation and review limits](docs/VALIDATION.md)
 

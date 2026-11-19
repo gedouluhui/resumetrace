@@ -15,6 +15,8 @@ import tempfile
 import uuid
 
 from .fingerprint import DTYPE_SIZES, MAX_PATH, compare_fingerprints, escape, fingerprint
+from .rng_format import check as check_rng_format
+from .rng_format import templates as rng_templates
 from .torch_observer import REASONS as INSPECTION_REASONS, POLICIES
 
 
@@ -200,6 +202,11 @@ def _validate_state(state, config):
     if any(state.get(path, {}).get('type') != kind
            for path, kind in required_types.items()):
         raise ValueError('invalid_observation_evidence')
+    # Container shape alone cannot prove that a recorded RNG is the state this
+    # runtime actually produces: a float32 empty Torch state or a truncated
+    # Python state tuple is self-consistent but incomparable. Check the
+    # internal structure, dtype and shape against the declared format.
+    check_rng_format(state, rng_templates())
 
 
 def _validate_inspection(value):

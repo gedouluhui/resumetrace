@@ -111,6 +111,55 @@ class GlobalRngTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 original(corrupted, job, pid)
 
+    def test_parent_rejects_structurally_invalid_rng_from_real_worker(self):
+        # A fingerprint can be self-consistent and still describe an RNG this
+        # runtime never produces. The reviewer's exact counterexample (a
+        # float32, empty Torch state) must be invalid, not comparable state.
+        captured = []
+        original = engine._validate_result
+        def capture(result, job, pid):
+            if not captured:
+                captured.append((copy.deepcopy(result), copy.deepcopy(job), pid))
+            return original(result, job, pid)
+        with patch.object(engine, '_validate_result', side_effect=capture):
+            report = self.audit('none')
+        self.assertEqual(report['status'], 'PASS', report['error'])
+        result, job, pid = captured[0]
+
+        def corrupt(mutate):
+            corrupted = copy.deepcopy(result)
+            mutate(corrupted['observations'][0]['state'])
+            return corrupted
+
+        def torch_float32_empty(state):
+            leaf = state['$/s:global_rng/s:torch']
+            leaf['dtype'], leaf['shape'], leaf['bytes'] = 'torch.float32', [0], 0
+
+        def torch_wrong_shape(state):
+            state['$/s:global_rng/s:torch']['shape'] = [0]
+
+        def numpy_wrong_dtype(state):
+            state['$/s:global_rng/s:numpy/t:1']['dtype'] = 'torch.float64'
+
+        def python_short_state(state):
+            prefix = '$/s:global_rng/s:python/t:1'
+            removed = prefix + '/t:%d' % (state[prefix]['length'] - 1)
+            del state[removed]
+            state[prefix]['length'] -= 1
+
+        def python_gauss_text(state):
+            state['$/s:global_rng/s:python/t:2'] = {'type': 'str', 'sha256': '0' * 64}
+
+        cases = {'torch_float32_empty': torch_float32_empty,
+                 'torch_wrong_shape': torch_wrong_shape,
+                 'numpy_wrong_dtype': numpy_wrong_dtype,
+                 'python_short_state': python_short_state,
+                 'python_gauss_text': python_gauss_text}
+        for name, mutate in cases.items():
+            with self.subTest(case=name):
+                with self.assertRaises(ValueError):
+                    original(corrupt(mutate), job, pid)
+
     def test_global_rng_evidence_shares_exact_byte_leaf_and_trace_budgets(self):
         # Count the typed wrapper, counter, native Python tuple, NumPy tuple
         # (whose keys are one tensor), and the default torch state tensor.
