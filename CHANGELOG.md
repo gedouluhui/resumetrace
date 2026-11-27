@@ -1,5 +1,9 @@
 # Changelog
 
+
+## Unreleased
+
+- Align public governance, bilingual quickstarts, issue templates, and documentation validation.
 ## 0.2.1 — 2026-11-19
 
 Fixes the contract hole reported by the independent read-only review of 0.2.0a1: an

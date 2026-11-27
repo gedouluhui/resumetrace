@@ -98,3 +98,34 @@ python -m resumetrace audit examples.guarded_training:make_session --config '{"f
 [pytest-torch](https://github.com/AKJ7/pytest-torch) 已提供恢复等价检查；本项目明确聚焦“真正的新进程、重新进入数据管线、独立连续对照和离线证据”，不宣称发明恢复测试。更完整的边界、使用方法与相关项目见 [英文 README](README.md)。
 
 项目由 AI 辅助开发并通过实际执行与审查推进，不承诺 GitHub stars、外部用户采用或真实性能收益。MIT 许可。
+
+## 快速开始与支持状态
+
+### 问题
+通过比较不间断执行与保存、退出、重建、冷恢复，测试训练能否在真实进程退出后正确续跑。
+
+### 安装
+```sh
+python -m pip install torch --index-url https://download.pytorch.org/whl/cpu && python -m pip install .
+```
+
+### 成功命令
+```sh
+python -m resumetrace demo --fault none --json normal.json --html normal.html
+```
+预期：冷进程比较有效且匹配；退出码 0。
+
+### 故意失败命令
+```sh
+python -m resumetrace demo --fault process-cache --json drift.json --html drift.html
+```
+预期：丢失的进程全局优化器状态被报告为 DRIFT；退出码 1。
+
+### 证据与覆盖边界
+证据包括四个真实 Python 进程、重复连续对照、数据管线重新进入、优化器/调度器/RNG/游标观察、严格 RNG 格式校验和 101 项本地测试。精确相等仅限于观察到的有限域和确定性 CPU eager 模式，不是通用可复现性保证。
+
+### 支持状态
+版本 0.2.1 支持 Python 3.10+ 和 CPU PyTorch。它仍是预发布版本，没有独立全项目批准。文档路径是源码或发布 wheel，不是猜测的 PyPI 包。维护为尽力而为，不提供 SLA。
+
+### 限制
+此版本不支持 GPU、分布式训练、AMP、编译图、后台线程、多进程数据加载器、自定义优化器和许多别名/布局情况。回调是受信任代码，可能产生任意副作用；预算不是进程 RSS 上限。
