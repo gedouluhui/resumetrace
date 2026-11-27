@@ -176,3 +176,34 @@ A useful bug report includes a tiny importable factory, supported environment ve
 The code, examples and documents were developed with AI assistance and local execution/review. Test outcomes and compatibility evidence should be inspected at the exact revision you use; no external-user adoption or performance claims are made.
 
 MIT licensed. PyTorch and NumPy remain under their own licenses.
+
+## Quickstart and support
+
+### Problem
+Test whether training survives a real process exit by comparing uninterrupted execution with save, exit, reconstruct, and cold resume.
+
+### Install
+```sh
+python -m pip install torch --index-url https://download.pytorch.org/whl/cpu && python -m pip install .
+```
+
+### Success
+```sh
+python -m resumetrace demo --fault none --json normal.json --html normal.html
+```
+Expected: The cold-process comparison is valid and matches; exit 0.
+
+### Deliberate failure
+```sh
+python -m resumetrace demo --fault process-cache --json drift.json --html drift.html
+```
+Expected: The lost process-global optimizer state is reported as DRIFT and exits 1.
+
+### Evidence and coverage boundaries
+Evidence includes four real Python processes, a repeated continuous control, data-pipeline re-entry, optimizer/scheduler/RNG/cursor observations, strict RNG-format validation, and 101 local tests. Exact equality is limited to the observed finite domain and deterministic CPU eager mode; it is not a universal reproducibility guarantee.
+
+### Support status
+Version 0.2.1 supports Python 3.10+ with CPU PyTorch. It remains a pre-release with no independent whole-project approval. The documented route is source or a release wheel, not a guessed PyPI package. Maintenance is best-effort with no SLA.
+
+### Limitations
+GPU, distributed training, AMP, compiled graphs, background threads, multiprocessing data loaders, custom optimizers, and many alias/layout cases are outside this release. Callbacks are trusted code and can cause arbitrary side effects; budgets are not process-RSS caps.
